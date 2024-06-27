@@ -350,6 +350,8 @@ class TS2FXGraphConverter:
                     self.fx_graph, name, self.is_top_level_graph()
                 )
             else:
+                if not is_valid_for_codegen(normalized_name):
+                    normalized_name = f"input_{normalized_name}"
                 self.input_specs.append(
                     InputSpec(
                         InputKind.USER_INPUT,
@@ -774,6 +776,7 @@ class TS2EPConverter:
     ):
         self.ts_model = ts_model
         self.ts_graph, self.params, _, _ = _create_jit_graph(ts_model, sample_args)
+        print(self.ts_graph)
 
         self.sample_args = sample_args
         self.sample_kwargs = sample_kwargs
@@ -801,6 +804,7 @@ class TS2EPConverter:
         )
         gm = graph_converter.convert()
         ep = self.retrace_as_exported_program(gm, graph_converter.tensor_constants)
+        print(ep)
         return ep
 
     def retrace_as_exported_program(
